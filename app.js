@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 
 
 var db = require('./bin/db');
-var Schemes = require('./models/shortUrl');
 
 var routes = require('./scripts/index');
 

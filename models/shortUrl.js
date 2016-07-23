@@ -1,11 +1,10 @@
 var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
-var shortUrlSchema = new Schema({
-    title: { type: String }
-    , rating: String
-    , releaseYear: Number
-    , hasCreditCookie: Boolean
-});
 
-exports.Movie =  mongoose.model('NotMovie', shortUrlSchema);
+var shortUrlSchema = new Schema({
+    short: { type: String }
+    , long: String
+    , user: String
+});
+exports.ShortUrl =  mongoose.model('ShortUrl', shortUrlSchema);

@@ -1,20 +1,41 @@
 var Schemas = require('../models/shortUrl');
 
 
+exports.crearUrlShort = function (params, res) {
 
-exports.crearUrlShort = function () {
 
-    console.log(Schemas);
-    var thor = new Schemas.Movie({
-        title: 'Gatitos'
-        , rating: 'PG-13'
-        , releaseYear: '2011'  // Notice the use of a String rather than a Number - Mongoose will automatically convert this for us.
-        , hasCreditCookie: true
-    });
-
-    thor.save(function(err, thor) {
+    Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
         if (err) return console.error(err);
-        console.dir(thor);
+        if (data) {
+            res(data.short); //send data
+        } else {
+            generateShortUrl(function (short) {
+                var data = new Schemas.ShortUrl({
+                    short: short
+                    , long: params.URI
+                    , user: 'Anom'
+                });
+
+                data.save(function (err, data) {
+                    if (err) return console.error(err);
+                    res(short); //send data
+                });
+            });
+        }
     });
+
+
 };
 
+function generateShortUrl(callback) {
+    var corta = Math.random().toString(36).slice(2);
+    Schemas.ShortUrl.findOne({short: corta}, function (err, data) {
+        if (err) return console.error(err);
+        if (data) {
+            generateShortUrl(callback);
+        } else {
+            callback(corta);
+        }
+    });
+
+}
