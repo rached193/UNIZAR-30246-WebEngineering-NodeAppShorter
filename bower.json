@@ -1,0 +1,20 @@
+{
+  "name": "ShorterUrl",
+  "description": "Trabajo para Ingenieria Web",
+  "main": "bin/www.js",
+  "authors": [
+    "rached193 <archer193@hotmail.com>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/rached193/UNIZAR-30246-WebEngineering-NodeAppShorter",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+  }
+}
