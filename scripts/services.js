@@ -1,4 +1,5 @@
 var Schemas = require('../models/shortUrl');
+var scrape = require('html-metadata');
 
 
 exports.crearUrlShort = function (params, res) {
@@ -9,6 +10,8 @@ exports.crearUrlShort = function (params, res) {
         if (data) {
             res(data.short); //send data
         } else {
+            retriveMetaData(params.URI);
+
             generateShortUrl(function (short) {
                 var data = new Schemas.ShortUrl({
                     short: short
@@ -26,6 +29,25 @@ exports.crearUrlShort = function (params, res) {
 
 
 };
+
+function retriveMetaData(url) {
+
+    scrape(url, function (error, metadata) {
+        var general = metadata.general;
+        var descripcion = general.description;
+        var title = general.title;
+        var arrayDdescripcion = stopwords(descripcion.split(' '));
+        var arrayTitle = stopwords(title.split(' '));
+
+        console.log(metadata);
+        console.log(arrayDdescripcion);
+        console.log(arrayTitle);
+    });
+}
+
+function stopwords(array){
+    return array;
+}
 
 function generateShortUrl(callback) {
     var corta = Math.random().toString(36).slice(2);

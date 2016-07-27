@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var service = require('./services');
 var http = require('http');
-var MetaInspector = require('node-metainspector');
 
 exports.crearUrlShort = function (req, res) {
 
@@ -17,7 +16,19 @@ exports.pruebas = function (req, res) {
     var url = "http://submanga.com/";
 
     scrape(url, function(error, metadata){
+        var general = metadata.general;
+        var descripcion = general.description;
+        var title = general.title;
+        var arrayDdescripcion = descripcion.split(' ');
+        var arrayTitle = descripcion.split(' ');
+
         console.log(metadata);
+        console.log(arrayDdescripcion);
+        console.log(arrayTitle);
     });
     res.send();
 };
+
+function stopwords(array){
+
+}
