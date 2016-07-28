@@ -1,6 +1,27 @@
 var Schemas = require('../models/shortUrl');
 var scrape = require('html-metadata');
+var Promise = require('promise');
 
+exports.pruebas = function (params, res) {
+
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+
+    promise.then(function (data){
+        if(data)  res(data.short);
+
+            var short = generateShortUrl();
+        console.log(short);
+        res(short);
+
+
+    });
+
+};
 
 exports.crearUrlShort = function (params, res) {
 
@@ -10,7 +31,7 @@ exports.crearUrlShort = function (params, res) {
         if (data) {
             res(data.short); //send data
         } else {
-            retriveMetaData(params.URI);
+
 
             generateShortUrl(function (short) {
                 var data = new Schemas.ShortUrl({
@@ -45,19 +66,23 @@ function retriveMetaData(url) {
     });
 }
 
-function stopwords(array){
+function stopwords(array) {
     return array;
 }
 
-function generateShortUrl(callback) {
+function generateShortUrl() {
+
     var corta = Math.random().toString(36).slice(2);
-    Schemas.ShortUrl.findOne({short: corta}, function (err, data) {
-        if (err) return console.error(err);
-        if (data) {
-            generateShortUrl(callback);
-        } else {
-            callback(corta);
-        }
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.ShortUrl.findOne({short: corta}, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
     });
 
+    promise.then(function (data){
+        if(data)  return generateShortUrl();
+        console.log(corta);
+        return corta;
+    });
 }
