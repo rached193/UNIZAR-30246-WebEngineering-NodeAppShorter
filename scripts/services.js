@@ -1,8 +1,11 @@
 var Schemas = require('../models/shortUrl');
 var scrape = require('html-metadata');
 var Promise = require('promise');
+var _ = require('lodash');
 
-exports.pruebas = function (params, res) {
+exports.crearUrlShort = function (params, res) {
+
+    retriveMetaData(params.URI);
 
     var promise = new Promise(function (resolve, reject) {
         Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
@@ -11,66 +14,79 @@ exports.pruebas = function (params, res) {
         });
     });
 
-    promise.then(function (data){
-        if(data)  res(data.short);
-
-            var short = generateShortUrl();
-        console.log(short);
-        res(short);
-
-
-    });
-
-};
-
-exports.crearUrlShort = function (params, res) {
-
-
-    Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
-        if (err) return console.error(err);
+    promise.then(function (data) {
         if (data) {
-            res(data.short); //send data
+            res(data.short)
         } else {
+            new Promise(function (resolve, reject) {
+                generateShortUrl(resolve);
+            }).then(function (data) {
+                scrape(params.URI, function (error, metadata) {
+                    if (error) { //Error, si no es una url valida
+                        res(error);
+                    } else {
+                        var general = metadata.general;
+                        var descripcion = general.description;
+                        var title = general.title;
+                        var arrayDdescripcion = stopwords(descripcion.split(' '));
+                        var arrayTitle = stopwords(title.split(' '));
 
 
-            generateShortUrl(function (short) {
-                var data = new Schemas.ShortUrl({
-                    short: short
-                    , long: params.URI
-                    , user: 'Anom'
-                });
+                        var info = new Schemas.ShortUrl({
+                            short: data
+                            , long: params.URI
+                            , user: 'Anom'
+                        });
 
-                data.save(function (err, data) {
-                    if (err) return console.error(err);
-                    res(short); //send data
+                        info.save(function (err, out) {
+                            if (err) return console.error(err);
+                            res(out); //send data
+                        });
+                    }
                 });
             });
         }
-    });
 
+    });
 
 };
 
 function retriveMetaData(url) {
 
-    scrape(url, function (error, metadata) {
-        var general = metadata.general;
-        var descripcion = general.description;
-        var title = general.title;
-        var arrayDdescripcion = stopwords(descripcion.split(' '));
-        var arrayTitle = stopwords(title.split(' '));
+    scrape("http://" + url, function (error, metadata) {
+        if (error) {
+            console.log(error);
+        } else {
 
-        console.log(metadata);
-        console.log(arrayDdescripcion);
-        console.log(arrayTitle);
+
+            var general = metadata.general;
+            var descripcion = general.description;
+            var title = general.title;
+            var arrayDdescripcion = stopwords(descripcion.split(' '));
+            var arrayTitle = stopwords(title.split(' '));
+
+            console.log(arrayDdescripcion);
+            console.log(arrayTitle);
+        }
     });
 }
 
 function stopwords(array) {
-    return array;
+    var dic = ['y', ',', 'las', 'en', '-','ultimas'];
+    var nArray = [];
+    _.forEach(array, function (item) {
+        console.log(item);
+       var found = _.findIndex(dic,function(o) { return o == item.toLowerCase();});
+        console.log(found);
+        if(found==-1){
+            nArray.push(item.toLowerCase());
+        }
+    });
+    return nArray;
 }
 
-function generateShortUrl() {
+
+function generateShortUrl(res) {
 
     var corta = Math.random().toString(36).slice(2);
     var promise = new Promise(function (resolve, reject) {
@@ -79,10 +95,8 @@ function generateShortUrl() {
             else resolve(data);
         });
     });
-
-    promise.then(function (data){
-        if(data)  return generateShortUrl();
-        console.log(corta);
-        return corta;
+    promise.then(function (data) {
+        if (data)  return generateShortUrl(res);
+        else res(corta);
     });
 }

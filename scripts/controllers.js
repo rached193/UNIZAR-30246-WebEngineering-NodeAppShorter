@@ -4,7 +4,7 @@ var http = require('http');
 
 exports.crearUrlShort = function (req, res) {
 
-    service.pruebas(req.params, function (info) {
+    service.crearUrlShort(req.params, function (info) {
         res.send({shorUrl: info});
     });
 };
