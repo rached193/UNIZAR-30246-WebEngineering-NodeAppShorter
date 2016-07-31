@@ -5,7 +5,6 @@ var _ = require('lodash');
 
 exports.crearUrlShort = function (params, res) {
 
-    retriveMetaData(params.URI);
 
     var promise = new Promise(function (resolve, reject) {
         Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
@@ -25,17 +24,14 @@ exports.crearUrlShort = function (params, res) {
                     if (error) { //Error, si no es una url valida
                         res(error);
                     } else {
-                        var general = metadata.general;
-                        var descripcion = general.description;
-                        var title = general.title;
-                        var arrayDdescripcion = stopwords(descripcion.split(' '));
-                        var arrayTitle = stopwords(title.split(' '));
+                        var metaInfo = retriveMetaData(metadata);
 
 
                         var info = new Schemas.ShortUrl({
                             short: data
                             , long: params.URI
                             , user: 'Anom'
+                            , description: metaInfo
                         });
 
                         info.save(function (err, out) {
@@ -51,34 +47,73 @@ exports.crearUrlShort = function (params, res) {
 
 };
 
-function retriveMetaData(url) {
-
-    scrape("http://" + url, function (error, metadata) {
-        if (error) {
-            console.log(error);
-        } else {
+exports.fetchUrl = function (params, res) {
 
 
-            var general = metadata.general;
-            var descripcion = general.description;
-            var title = general.title;
-            var arrayDdescripcion = stopwords(descripcion.split(' '));
-            var arrayTitle = stopwords(title.split(' '));
-
-            console.log(arrayDdescripcion);
-            console.log(arrayTitle);
-        }
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.ShortUrl.findOne({short: params.URI}, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
     });
+
+    promise.then(function (data) {
+        if (data) res(data);
+        else res([]);
+    });
+};
+
+exports.findUrlShort = function (params, res) {
+    var args = {};
+
+    if (params.description && params.title) {
+        args = {description: params.description, title: params.title}
+    } else if (params.description) {
+        args = {description: params.description}
+    } else if (params.title) {
+        args = {title: params.title}
+    }
+
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.ShortUrl.find(args, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+
+    promise.then(function (data) {
+        if (data) res(data);
+        else res([]);
+    });
+};
+
+function retriveMetaData(metadata) {
+
+
+    var general = metadata.general;
+    var descripcion = general.description;
+    var title = general.title;
+    var arrayDdescripcion = stopwords(descripcion.split(' '));
+    var arrayTitle = stopwords(title.split(' '));
+
+    console.log(arrayDdescripcion);
+    console.log(arrayTitle);
+
+    return arrayDdescripcion;
+
+
 }
 
 function stopwords(array) {
-    var dic = ['y', ',', 'las', 'en', '-','ultimas'];
+    var dic = ['y', ',', 'las', 'en', '-', 'ultimas'];
     var nArray = [];
     _.forEach(array, function (item) {
         console.log(item);
-       var found = _.findIndex(dic,function(o) { return o == item.toLowerCase();});
+        var found = _.findIndex(dic, function (o) {
+            return o == item.toLowerCase();
+        });
         console.log(found);
-        if(found==-1){
+        if (found == -1) {
             nArray.push(item.toLowerCase());
         }
     });
