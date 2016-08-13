@@ -1,6 +1,4 @@
-var mongoose = require('mongoose');
 var service = require('./services');
-var http = require('http');
 
 exports.crearUrlShort = function (req, res) {
 
@@ -15,16 +13,16 @@ exports.crearUrlShort = function (req, res) {
 
 exports.findUrlShort = function (req, res) {
 
-    if(!req.query.description && !req.query.title){
+    if (!req.query.description && !req.query.title) {
         //error
     }
 
     if (req.query.description) {
-        req.params.description =  req.query.description;
+        req.params.description = req.query.description;
     }
 
     if (req.query.title) {
-        req.params.title =  req.query.title;
+        req.params.title = req.query.title;
     }
 
 
@@ -43,6 +41,7 @@ exports.fetchUrl = function (req, res) {
         res.send({shorUrl: info});
     });
 };
+
 
 exports.pruebas = function (req, res) {
 

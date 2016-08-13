@@ -9,7 +9,7 @@ var bodyParser = require('body-parser');
 
 var db = require('./bin/db');
 
-var routes = require('./scripts/index');
+var routes = require('./module/route');
 
 var app = express();
 
