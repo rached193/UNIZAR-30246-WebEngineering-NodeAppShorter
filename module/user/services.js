@@ -33,9 +33,9 @@ exports.registryUser = function (params, res) {
 
 exports.autenticateUser = function (params, res) {
     var promise = new Promise(function (resolve, reject) {
-        Schemas.UserAccount.find({user: params.user}, function (err, data) {
+        Schemas.UserAccount.find({user: params.user, pass: params.pass}, function (err, data) {
             if (err) reject(err);
-            else resolve(data); // Pass
+            else resolve(data);
         });
     });
 

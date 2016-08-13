@@ -6,9 +6,12 @@ exports.crearUrlShort = function (req, res) {
         //error
     }
     req.params.URI = req.query.URI;
-    service.crearUrlShort(req.params, function (info) {
+
+    function resolve(info) {
         res.send({shorUrl: info});
-    });
+    }
+
+    service.crearUrlShort(req.params, resolve);
 };
 
 exports.findUrlShort = function (req, res) {
@@ -25,10 +28,13 @@ exports.findUrlShort = function (req, res) {
         req.params.title = req.query.title;
     }
 
-
-    service.findUrlShort(req.params, function (info) {
+    function resolve(info) {
         res.send({url: info});
-    });
+    }
+
+    service.findUrlShort(req.params, resolve);
+
+
 };
 
 exports.fetchUrl = function (req, res) {
@@ -37,15 +43,15 @@ exports.fetchUrl = function (req, res) {
     }
     req.params.INFO = req.query.INFO;
 
-    service.fetchUrl(req.params, function (info) {
+    function resolve(info) {
         res.send({shorUrl: info});
-    });
+    }
+
+    service.fetchUrl(req.params, resolve);
 };
 
 
 exports.pruebas = function (req, res) {
-
-
     res.send();
 };
 
