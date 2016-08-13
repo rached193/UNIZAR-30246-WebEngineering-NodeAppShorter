@@ -1,4 +1,4 @@
-var Schemas = require('../models/shortUrl');
+var Schemas = require('/../models/shortUrl');
 var scrape = require('html-metadata');
 var Promise = require('promise');
 var _ = require('lodash');
@@ -17,9 +17,11 @@ exports.crearUrlShort = function (params, res) {
         if (data) {
             res(data.short)
         } else {
-            new Promise(function (resolve, reject) {
+            var npromise = new Promise(function (resolve, reject) {
                 generateShortUrl(resolve);
-            }).then(function (data) {
+            });
+
+            npromise.then(function (data) {
                 scrape(params.URI, function (error, metadata) {
                     if (error) { //Error, si no es una url valida
                         res(error);
