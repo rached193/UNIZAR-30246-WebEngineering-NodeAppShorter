@@ -1,4 +1,4 @@
-var Schemas = require('/../models/shortUrl');
+var Schemas = require('../../models/shortUrl');
 var scrape = require('html-metadata');
 var Promise = require('promise');
 var _ = require('lodash');

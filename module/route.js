@@ -11,6 +11,7 @@ router.get('/findShort/', controllerURI.findUrlShort);
 
 
 /* User modulo */
+router.get('/registryUser/', controllerUser.registryUser);
 router.post('/registryUser/', controllerUser.registryUser);
 router.post('/autenticateUser/', controllerUser.autenticateUser);
 

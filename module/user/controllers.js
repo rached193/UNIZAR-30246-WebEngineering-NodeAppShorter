@@ -2,7 +2,7 @@ var service = require('./services');
 
 exports.registryUser = function (req, res) {
 
-    res.send(req);
+    res.send([]);
 };
 
 exports.autenticateUser = function (req, res) {
