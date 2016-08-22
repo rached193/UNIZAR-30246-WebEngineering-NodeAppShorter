@@ -1,4 +1,4 @@
-var Schemas = require('../../models/shortUrl');
+var Schemas = require('../../models/user');
 var Promise = require('promise');
 var _ = require('lodash');
 
@@ -6,7 +6,7 @@ var _ = require('lodash');
 exports.registryUser = function (params, res) {
 
     var promise = new Promise(function (resolve, reject) {
-        Schemas.UserAccount.findOne({user: params.user}, function (err, data) {
+        Schemas.UserAccount.findOne({user: params.username}, function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });
@@ -18,8 +18,8 @@ exports.registryUser = function (params, res) {
         } else {
 
             var info = new Schemas.UserAccount({
-                user: params.user
-                , pass: params.pass
+                user: params.username
+                , pass: params.password
             });
 
             info.save(function (err, out) {

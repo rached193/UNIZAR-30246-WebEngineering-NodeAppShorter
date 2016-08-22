@@ -20,7 +20,7 @@ describe("Registar Usuario", function () {
         chai.request(url).post('registryUser/')
             .send(user)
             .end(function (err, res) {
-                expect(response.statusCode).to.equal(200);
+                expect(res.statusCode).to.equal(200);
                 done();
             })
     });
