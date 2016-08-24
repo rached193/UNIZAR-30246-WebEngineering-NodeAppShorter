@@ -4,16 +4,50 @@ var chaiHttp = require('chai-http');
 
 chai.use(chaiHttp);
 
+var url = "http://localhost:3000/";
 
-var db = require('../bin/db');
-var mongoose = require('mongoose');
+describe("Crear una Url en el sistema", function () {
 
-mongoose.connection.db.dropCollection('UserAccount', function (err, result) {
-    if (err) console.error(err);
-    else console.log("Borrando Base de datos de Usuarios");
+
+    var URI = "http://es.gizmodo.com/";
+    var shortUrl = '';
+
+    it("Crear una URl: Devuelve la Acortada", function (done) {
+
+
+        chai.request(url).get('generateShort/?URI=' + URI)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
+                done();
+            })
+    });
+
+    it("Si la Url ya esta registrada devuelve, la direcion corta registarada", function (done) {
+
+        chai.request(url).get('generateShort/?URI=' + URI)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                var otherShort = res.body.shortUrl;
+                expect(shortUrl).equal(otherShort);
+                done();
+            })
+    });
+
+
+    it("Comprueba que la direccion corta devuelve la misma URI que la creo", function (done) {
+
+        chai.request(url).get("fetchShort/" + shortUrl)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                var otherURL = res.body.URI;
+                expect(otherURL).equal(URI);
+                done();
+            })
+    });
+
 });
-
-
 
 describe("Registar Usuario", function () {
 

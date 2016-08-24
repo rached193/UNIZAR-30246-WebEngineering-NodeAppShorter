@@ -2,13 +2,17 @@ var service = require('./services');
 
 exports.crearUrlShort = function (req, res) {
 
-    if (!req.query.URI) {
-        //error
-    }
+    if (!req.query.URI)  throw new Error('Es necesario el campo URI');
     req.params.URI = req.query.URI;
 
+    if (req.query.tags) {
+        req.params.tags = req.query.tags;
+    } else {
+        req.params.tags = "";
+    }
+
     function resolve(info) {
-        res.send({shorUrl: info});
+        res.send({"shortUrl": info});
     }
 
     service.crearUrlShort(req.params, resolve);
@@ -44,7 +48,7 @@ exports.fetchUrl = function (req, res) {
     req.params.INFO = req.query.INFO;
 
     function resolve(info) {
-        res.send({shorUrl: info});
+        res.send({URI: info});
     }
 
     service.fetchUrl(req.params, resolve);

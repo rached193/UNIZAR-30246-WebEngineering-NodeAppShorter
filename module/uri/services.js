@@ -14,38 +14,44 @@ exports.crearUrlShort = function (params, res) {
     });
 
     promise.then(function (data) {
-        if (data) {
-            res(data.short)
-        } else {
-            var npromise = new Promise(function (resolve, reject) {
-                generateShortUrl(resolve);
-            });
-
-            npromise.then(function (data) {
-                scrape(params.URI, function (error, metadata) {
-                    if (error) { //Error, si no es una url valida
-                        res(error);
-                    } else {
-                        var metaInfo = retriveMetaData(metadata);
-
-
-                        var info = new Schemas.ShortUrl({
-                            short: data
-                            , long: params.URI
-                            , user: 'Anom'
-                            , description: metaInfo
-                        });
-
-                        info.save(function (err, out) {
-                            if (err) return console.error(err);
-                            res(out); //send data
-                        });
-                    }
+            if (data) {
+                res(data.short)
+            } else {
+                var npromise = new Promise(function (resolve, reject) {
+                    generateShortUrl(resolve);
                 });
-            });
-        }
 
-    });
+                npromise.then(function (data) {
+                    scrape(params.URI, function (error, metadata) {
+                        if (error) { //Error, si no es una url valida
+                            res(error);
+                        } else {
+                            var metaInfo = retriveMetaData(metadata);
+
+
+                            var info = new Schemas.ShortUrl({
+                                short: data
+                                , long: params.URI
+                                , user: 'Anom'
+                                , description: metaInfo[0]
+                                , title: metaInfo[1]
+                                , tags: params.tags
+                            });
+
+                            info.save(function (err, out) {
+                                if (err) return console.error(err);
+                                res(out.short); //send data
+                            });
+                        }
+                    });
+                });
+            }
+
+        }, function (err) {
+            console.log(err);
+            res.sendStatus(412);
+        }
+    );
 
 };
 
@@ -58,9 +64,8 @@ exports.fetchUrl = function (params, res) {
             else resolve(data);
         });
     });
-
     promise.then(function (data) {
-        if (data) res(data);
+        if (data) res(data.long);
         else res([]);
     });
 };
@@ -98,10 +103,8 @@ function retriveMetaData(metadata) {
     var arrayDdescripcion = stopwords(descripcion.split(' '));
     var arrayTitle = stopwords(title.split(' '));
 
-    console.log(arrayDdescripcion);
-    console.log(arrayTitle);
 
-    return arrayDdescripcion;
+    return [arrayDdescripcion, arrayTitle];
 
 
 }

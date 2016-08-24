@@ -8,6 +8,7 @@ var shortUrlSchema = new Schema({
     , user: String
     , description: [String]
     , title: [String]
+    , tags: [String]
 });
 exports.ShortUrl = mongoose.model('ShortUrl', shortUrlSchema);
 
