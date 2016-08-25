@@ -5,12 +5,12 @@ var chaiHttp = require('chai-http');
 chai.use(chaiHttp);
 
 var url = "http://localhost:3000/";
-
+var shortUrl = '';
 describe("Crear una Url en el sistema", function () {
 
 
     var URI = "http://es.gizmodo.com/";
-    var shortUrl = '';
+
 
     it("Crear una URl: Devuelve la Acortada", function (done) {
 
@@ -43,6 +43,22 @@ describe("Crear una Url en el sistema", function () {
                 expect(res.statusCode).to.equal(200);
                 var otherURL = res.body.URI;
                 expect(otherURL).equal(URI);
+                done();
+            })
+    });
+
+});
+
+describe("Estadisticas", function () {
+
+
+    var url = "http://localhost:3000/";
+
+    it("Recuperar la iformacion de la URL: Devuelve status 200", function (done) {
+
+        chai.request(url).post("fetchShort/info" + shortUrl)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
                 done();
             })
     });

@@ -6,7 +6,8 @@ var controllerUser = require('./user/controllers');
 
 /* URI module. */
 router.get('/generateShort/', controllerURI.crearUrlShort);
-router.get('/fetchShort/:URI', controllerURI.fetchUrl);
+router.get('/fetchShort/:URI', controllerURI.fetchShort);
+router.get('/fetchShort/:URI/info', controllerURI.fetchUrlInfo);
 router.get('/findShort/', controllerURI.findUrlShort);
 
 

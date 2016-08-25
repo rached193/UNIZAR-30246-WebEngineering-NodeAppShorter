@@ -41,17 +41,26 @@ exports.findUrlShort = function (req, res) {
 
 };
 
-exports.fetchUrl = function (req, res) {
-    if (!req.query.INFO) {
-        //error
-    }
-    req.params.INFO = req.query.INFO;
+exports.fetchShort = function (req, res) {
+
 
     function resolve(info) {
-        res.send({URI: info});
+        res.send({URI: info.long});
     }
 
     service.fetchUrl(req.params, resolve);
+};
+
+
+exports.fetchUrlInfo = function (req, res) {
+
+
+    function resolve(info) {
+        console.log(info);
+        res.send({info: [info.title, info.description, info.tags]});
+    }
+
+    service.fetchShort(req.params, resolve);
 };
 
 

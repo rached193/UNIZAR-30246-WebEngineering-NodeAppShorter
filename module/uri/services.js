@@ -49,7 +49,7 @@ exports.crearUrlShort = function (params, res) {
 
         }, function (err) {
             console.log(err);
-            res.sendStatus(412);
+        //res.sendStatus(412);
         }
     );
 
@@ -65,7 +65,7 @@ exports.fetchUrl = function (params, res) {
         });
     });
     promise.then(function (data) {
-        if (data) res(data.long);
+        if (data) res(data);
         else res([]);
     });
 };
