@@ -12,3 +12,12 @@ var shortUrlSchema = new Schema({
 });
 exports.ShortUrl = mongoose.model('ShortUrl', shortUrlSchema);
 
+var privateUrlSchema = new Schema({
+    short: {type: String}
+    , long: String
+    , user: String
+    , description: [String]
+    , title: [String]
+    , tags: [String]
+});
+exports.PrivateUrl = mongoose.model('PrivateUrl', privateUrlSchema);

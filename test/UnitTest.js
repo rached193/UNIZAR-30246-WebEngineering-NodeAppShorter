@@ -56,7 +56,7 @@ describe("Estadisticas", function () {
 
     it("Recuperar la iformacion de la URL: Devuelve status 200", function (done) {
 
-        chai.request(url).post("fetchShort/info" + shortUrl)
+        chai.request(url).get('fetchShort/' + shortUrl + '/info')
             .end(function (err, res) {
                 expect(res.statusCode).to.equal(200);
                 done();
@@ -118,4 +118,23 @@ describe("Autenticar Usuario", function () {
             })
     });
 
+});
+
+describe("Crear una URL privada", function () {
+    var URI = "http://es.gizmodo.com/";
+
+    it("Creada una Url privada asignada al usuario", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            tokem: 'test'
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URI + '&private=true')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(202);
+                done();
+            })
+    });
 });
