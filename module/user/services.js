@@ -48,10 +48,10 @@ exports.autenticateUser = function (params, res) {
 
     promise.then(function (data) {
         if (data) {
-            console.log(data);
-            res.send(token);
+            console.log(token);
+            res.send({'token': token});
         }
-        else res.send([]);
+        res.sendStatus(417);
     });
 };
 

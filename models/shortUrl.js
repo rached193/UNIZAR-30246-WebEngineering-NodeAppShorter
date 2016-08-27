@@ -16,8 +16,7 @@ var privateUrlSchema = new Schema({
     short: {type: String}
     , long: String
     , user: String
-    , description: [String]
-    , title: [String]
     , tags: [String]
+    , password: String
 });
 exports.PrivateUrl = mongoose.model('PrivateUrl', privateUrlSchema);

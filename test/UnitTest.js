@@ -99,12 +99,14 @@ describe("Registar Usuario", function () {
     });
 });
 
+var token = '';
+
 describe("Autenticar Usuario", function () {
 
 
     var url = "http://localhost:3000/";
 
-    it("Registar Usuario: Devuelve status 200", function (done) {
+    it("Loguear un  Usuario: Devuelve status 200", function (done) {
 
         var user = {
             username: 'vgheri',
@@ -113,6 +115,7 @@ describe("Autenticar Usuario", function () {
         chai.request(url).post('autenticateUser/')
             .send(user)
             .end(function (err, res) {
+                token = res.body.token;
                 expect(res.statusCode).to.equal(200);
                 done();
             })
@@ -127,13 +130,29 @@ describe("Crear una URL privada", function () {
 
         var user = {
             username: 'vgheri',
-            tokem: 'test'
+            token: token
         };
 
         chai.request(url).get('generateShort/?URI=' + URI + '&private=true')
             .send(user)
             .end(function (err, res) {
-                expect(res.statusCode).to.equal(202);
+                expect(res.statusCode).to.equal(200);
+                done();
+            })
+    });
+
+
+    it("Intentar crear una URL con el tokem incorrecto", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            token: 'test'
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URI + '&private=true')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(515);
                 done();
             })
     });

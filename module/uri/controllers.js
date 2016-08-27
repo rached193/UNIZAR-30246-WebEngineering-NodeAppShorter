@@ -5,8 +5,6 @@ exports.crearUrlShort = function (req, res) {
     if (!req.query.URI)  throw new Error('Es necesario el campo URI');
     req.params.URI = req.query.URI;
 
-    console.log(req.body);
-
     if (req.query.tags) {
         req.params.tags = req.query.tags;
     } else {
@@ -18,10 +16,16 @@ exports.crearUrlShort = function (req, res) {
     }
 
     if (req.query.private) {
-        res.sendStatus(202);
+        if (!req.body.token) throw new Error('Falta identifacion de Usuario');
+        req.params.username = req.body.username;
+        req.params.token = req.body.token;
+
+        service.crearPrvateUrl(req.params, res);
+    } else {
+        service.crearUrlShort(req.params, resolve);
     }
 
-    service.crearUrlShort(req.params, resolve);
+
 };
 
 exports.findUrlShort = function (req, res) {
@@ -59,7 +63,6 @@ exports.fetchShort = function (req, res) {
 
 
 exports.fetchUrlInfo = function (req, res) {
-
 
 
     function resolve(info) {

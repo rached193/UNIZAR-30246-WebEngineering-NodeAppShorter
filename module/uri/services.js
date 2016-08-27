@@ -1,4 +1,5 @@
 var Schemas = require('../../models/shortUrl');
+var Usuario = require('../../models/user');
 var scrape = require('html-metadata');
 var Promise = require('promise');
 var _ = require('lodash');
@@ -54,6 +55,64 @@ exports.crearUrlShort = function (params, res) {
     );
 
 };
+
+exports.crearPrvateUrl = function (params, res) {
+
+
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.PrivateUrl.findOne({long: params.URI}, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+
+    promise.then(function (data) {
+            if (data) {
+                res(data.short)
+            } else {
+                var npromise = new Promise(function (resolve, reject) {
+                    generateShortUrl(resolve);
+                });
+
+                npromise.then(function (data) {
+                        var promiseUser = new Promise(function (resolve, reject) {
+                            Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
+                                if (err) reject(err);
+                                else resolve(data);
+                            });
+                        });
+                        promiseUser.then(function (data) {
+                            if (data) {
+
+                                var info = new Schemas.ShortUrl({
+                                    short: data
+                                    , long: params.URI
+                                    , user: params.username
+                                    , tags: params.tags
+                                });
+
+                                info.save(function (err, out) {
+                                    if (err) return console.error(err);
+                                    res.send({"shortUrl": out.short}); //send data
+                                });
+                            } else {
+                                res.sendStatus(515);
+                            }
+                        });
+                    }
+                );
+            }
+
+        },
+        function (err) {
+            console.log(err);
+            //res.sendStatus(412);
+        }
+    )
+    ;
+
+}
+;
 
 exports.fetchUrl = function (params, res) {
 
