@@ -58,7 +58,6 @@ exports.crearUrlShort = function (params, res) {
 
 exports.crearPrvateUrl = function (params, res) {
 
-
     var promise = new Promise(function (resolve, reject) {
         Schemas.PrivateUrl.findOne({long: params.URI}, function (err, data) {
             if (err) reject(err);
@@ -68,37 +67,39 @@ exports.crearPrvateUrl = function (params, res) {
 
     promise.then(function (data) {
             if (data) {
-                res(data.short)
+                res.send({"shortUrl": data.short}); //send data
             } else {
                 var npromise = new Promise(function (resolve, reject) {
-                    generateShortUrl(resolve);
+                    Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
+                        if (err) reject(err);
+                        else resolve(data);
+                    });
                 });
 
                 npromise.then(function (data) {
+                    if (data) {
                         var promiseUser = new Promise(function (resolve, reject) {
-                            Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
-                                if (err) reject(err);
-                                else resolve(data);
+                            generateShortUrl(resolve);
                             });
-                        });
                         promiseUser.then(function (data) {
-                            if (data) {
 
-                                var info = new Schemas.ShortUrl({
+                            var info = new Schemas.PrivateUrl({
                                     short: data
                                     , long: params.URI
                                     , user: params.username
                                     , tags: params.tags
+                                , password: params.password
                                 });
 
                                 info.save(function (err, out) {
                                     if (err) return console.error(err);
                                     res.send({"shortUrl": out.short}); //send data
                                 });
-                            } else {
-                                res.sendStatus(515);
-                            }
+
                         });
+                    } else {
+                        res.sendStatus(515);
+                    }
                     }
                 );
             }
@@ -139,8 +140,13 @@ exports.fetchPrivate = function (params, res) {
         });
     });
     promise.then(function (data) {
-        if (data) res(data);
-        else res([]);
+        if (data) {
+            if (data.password == params.password) res.send({URI: data.long});
+            res.sendStatus(521);
+        }
+        else {
+            res.send({URI: ""});
+        }
     });
 };
 
@@ -187,11 +193,9 @@ function stopwords(array) {
     var dic = ['y', ',', 'las', 'en', '-', 'ultimas'];
     var nArray = [];
     _.forEach(array, function (item) {
-        console.log(item);
         var found = _.findIndex(dic, function (o) {
             return o == item.toLowerCase();
         });
-        console.log(found);
         if (found == -1) {
             nArray.push(item.toLowerCase());
         }

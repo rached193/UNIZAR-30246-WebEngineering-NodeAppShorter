@@ -22,10 +22,15 @@ exports.crearUrlShort = function (req, res) {
         if (!req.body.token) throw new Error('Falta identifacion de Usuario');
         req.params.username = req.body.username;
         req.params.token = req.body.token;
+        req.params.password = " ";
+        if (req.body.password) req.params.password = req.body.password;
 
         service.crearPrvateUrl(req.params, res);
+
     } else {
+
         service.crearUrlShort(req.params, resolve);
+
     }
 
 
@@ -76,11 +81,14 @@ exports.fetchShort = function (req, res) {
 exports.fetchPrivate = function (req, res) {
 
 
+    req.params.password = " ";
+    if (req.body.password) req.params.password = req.body.password;
+
     function resolve(info) {
-        res.send({URI: info.long});
+        res.send();
     }
 
-    service.fetchPrivate(req.params, resolve);
+    service.fetchPrivate(req.params, res);
 };
 
 

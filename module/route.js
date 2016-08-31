@@ -8,7 +8,7 @@ var controllerUser = require('./user/controllers');
 router.get('/generateShort/', controllerURI.crearUrlShort);
 router.get('/publicShort/:URI', controllerURI.fetchShort);
 router.get('/publicShort/:URI/info', controllerURI.fetchUrlInfo);
-router.get('/privateShort/:URI/info', controllerURI.fetchPrivate);
+router.get('/privateShort/:URI', controllerURI.fetchPrivate);
 router.get('/findShort/', controllerURI.findUrlShort);
 
 
