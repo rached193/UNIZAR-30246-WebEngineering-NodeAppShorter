@@ -9,6 +9,11 @@ var shortUrlSchema = new Schema({
     , description: [String]
     , title: [String]
     , tags: [String]
+    , statistics: {
+        click: {type: Number}
+        , search: Number
+
+    }
 });
 exports.ShortUrl = mongoose.model('ShortUrl', shortUrlSchema);
 

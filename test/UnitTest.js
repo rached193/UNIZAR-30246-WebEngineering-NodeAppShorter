@@ -106,7 +106,7 @@ describe("Autenticar Usuario", function () {
 
     var url = "http://localhost:3000/";
 
-    it("Loguear un  Usuario: Devuelve status 200", function (done) {
+    it("Loguear Usuario: Devuelve status 200", function (done) {
 
         var user = {
             username: 'vgheri',
@@ -117,6 +117,23 @@ describe("Autenticar Usuario", function () {
             .end(function (err, res) {
                 token = res.body.token;
                 expect(res.statusCode).to.equal(200);
+                done();
+            })
+    });
+
+    it("Loguear Usuario: Refrescar token", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            password: 'test'
+        };
+        chai.request(url).post('autenticateUser/')
+            .send(user)
+            .end(function (err, res) {
+                var rftoken = res.body.token;
+                expect(res.statusCode).to.equal(200);
+                expect(rftoken).to.not.equal(token);
+                token = rftoken;
                 done();
             })
     });

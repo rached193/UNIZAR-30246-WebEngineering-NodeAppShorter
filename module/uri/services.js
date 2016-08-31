@@ -37,6 +37,10 @@ exports.crearUrlShort = function (params, res) {
                                 , description: metaInfo[0]
                                 , title: metaInfo[1]
                                 , tags: params.tags
+                                , statistics: {
+                                    click: 0
+                                    , search: 0
+                                }
                             });
 
                             info.save(function (err, out) {
