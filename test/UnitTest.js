@@ -158,7 +158,7 @@ describe("Crear una URL privada: Libre Acceso", function () {
             })
     });
 
-    it("Comprueba que la direccion corta devuelve la misma URI que la creo", function (done) {
+    it("Recuperar la URI", function (done) {
 
         chai.request(url).get("privateShort/" + shortUrl)
             .end(function (err, res) {
@@ -292,5 +292,88 @@ describe("Crear una URL privada: Visibilidad.", function () {
             })
     });
 
+    it("Itentar la URI: vgheri.", function (done) {
+
+        var pass = {
+            username: 'vgheri',
+            token: token
+        };
+
+        chai.request(url).get("privateShort/" + shortUrl)
+            .send(pass)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(523);
+                done();
+            })
+    });
+
+
+});
+
+describe("Crear una URL privada: Caducidad.", function () {
+    var URI = "http://www.3djuegos.com/";
+
+    it("Creada una Url privada: Fecha limite +1 dia", function (done) {
+
+        var date = new Date();
+
+        date.setDate(date.getDate() + 1);
+
+        var user = {
+            username: 'vgheri',
+            token: token,
+            caducidad: date
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URI + '&private=true')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                done();
+            })
+    });
+
+    it("Recuperar la URI: Dentro del limite", function (done) {
+
+        chai.request(url).get("privateShort/" + shortUrl)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                var otherURL = res.body.URI;
+                expect(otherURL).equal(URI);
+                done();
+            })
+    })
+
+
+    it("Creada una Url privada: Fecha limite -1 dia", function (done) {
+        var URIDate = "http://www.genbeta.com/";
+        var date = new Date();
+
+        date.setDate(date.getDate() - 1);
+
+        var user = {
+            username: 'vgheri',
+            token: token,
+            caducidad: date
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URIDate + '&private=true')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                done();
+            })
+    });
+
+    it("Recuperar la URI: Expirada", function (done) {
+
+        chai.request(url).get("privateShort/" + shortUrl)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(521);
+                done();
+            })
+    });
 
 });

@@ -87,6 +87,7 @@ exports.crearPrvateUrl = function (params, res) {
                                     , tags: params.tags
                                 , password: params.password
                                 , share: params.share
+                                , caducidad: params.caducidad
                                 });
 
                                 info.save(function (err, out) {
@@ -139,16 +140,17 @@ exports.fetchPrivate = function (params, res) {
     });
     promise.then(function (data) {
         if (data) {
-            console.log(data.password);
-            console.log(params.password);
-            if (data.password == params.password) {
+            console.log(data);
+            if (data.password == params.password && (!data.caducidad || data.caducidad > Date.now())) {
                 if (data.share.length > 0) {
                     var promiseUsuario = new Promise(function (resolve, reject) {
                         validarUsuario(params, resolve, reject);
                     });
                     promiseUsuario.then(function (user) {
                         if (user) {
-                            var found = _.find(data.share, params.username);
+                            var found = _.find(data.share, function (item) {
+                                return item == params.username;
+                            });
                             if (found) {
                                 res.send({URI: data.long});
                             } else {

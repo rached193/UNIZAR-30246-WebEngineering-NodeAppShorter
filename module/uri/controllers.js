@@ -25,7 +25,9 @@ exports.crearUrlShort = function (req, res) {
         req.params.password = " ";
         if (req.body.password) req.params.password = req.body.password;
         req.params.share = [];
-        if (req.body.share) req.params.share = req.query.share;
+        if (req.body.share) req.params.share = req.body.share;
+        req.params.caducidad = "";
+        if (req.body.caducidad) req.params.caducidad = req.body.caducidad;
 
         service.crearPrvateUrl(req.params, res);
 
