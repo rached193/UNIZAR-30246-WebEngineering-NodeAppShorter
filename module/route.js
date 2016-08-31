@@ -6,14 +6,14 @@ var controllerUser = require('./user/controllers');
 
 /* URI module. */
 router.get('/generateShort/', controllerURI.crearUrlShort);
-router.get('/fetchShort/:URI', controllerURI.fetchShort);
-router.get('/fetchShort/:URI/info', controllerURI.fetchUrlInfo);
+router.get('/publicShort/:URI', controllerURI.fetchShort);
+router.get('/publicShort/:URI/info', controllerURI.fetchUrlInfo);
+router.get('/privateShort/:URI/info', controllerURI.fetchPrivate);
 router.get('/findShort/', controllerURI.findUrlShort);
 
 
 /* User modulo */
-router.get('/registryUser/', controllerUser.registryUser);
-router.post('/registryUser/', controllerUser.registryUser);
-router.post('/autenticateUser/', controllerUser.autenticateUser);
+router.post('/registryUser/', controllerUser.registryUser);  //USER POST
+router.post('/autenticateUser/', controllerUser.autenticateUser); //USER GET
 
 module.exports = router;

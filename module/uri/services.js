@@ -1,5 +1,5 @@
 var Schemas = require('../../models/shortUrl');
-var Usuario = require('../../models/user');
+var Usuario = require('../../models/userAccount');
 var scrape = require('html-metadata');
 var Promise = require('promise');
 var _ = require('lodash');
@@ -119,6 +119,21 @@ exports.fetchUrl = function (params, res) {
 
     var promise = new Promise(function (resolve, reject) {
         Schemas.ShortUrl.findOne({short: params.URI}, function (err, data) {
+            if (err) reject(err);
+            else resolve(data);
+        });
+    });
+    promise.then(function (data) {
+        if (data) res(data);
+        else res([]);
+    });
+};
+
+exports.fetchPrivate = function (params, res) {
+
+
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.PrivateUrl.findOne({short: params.URI}, function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });

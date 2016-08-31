@@ -1,4 +1,4 @@
-var Schemas = require('../../models/user');
+var Schemas = require('../../models/userAccount');
 var Promise = require('promise');
 var _ = require('lodash');
 var crypto = require('crypto');

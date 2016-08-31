@@ -1,5 +1,8 @@
 var service = require('./services');
 
+/**
+ *  Crea una URL acortada
+ */
 exports.crearUrlShort = function (req, res) {
 
     if (!req.query.URI)  throw new Error('Es necesario el campo URI');
@@ -28,6 +31,9 @@ exports.crearUrlShort = function (req, res) {
 
 };
 
+/**
+ * Devuelve las URI acortadas que cumplan con los criterios de busqueda
+ */
 exports.findUrlShort = function (req, res) {
 
     if (!req.query.description && !req.query.title) {
@@ -51,6 +57,9 @@ exports.findUrlShort = function (req, res) {
 
 };
 
+/**
+ * Recupera una URI public
+ */
 exports.fetchShort = function (req, res) {
 
 
@@ -61,7 +70,23 @@ exports.fetchShort = function (req, res) {
     service.fetchUrl(req.params, resolve);
 };
 
+/**
+ * Recupera una URI privada
+ */
+exports.fetchPrivate = function (req, res) {
 
+
+    function resolve(info) {
+        res.send({URI: info.long});
+    }
+
+    service.fetchPrivate(req.params, resolve);
+};
+
+
+/**
+ * Recupera una
+ */
 exports.fetchUrlInfo = function (req, res) {
 
 
