@@ -223,3 +223,74 @@ describe("Crear una URL privada: Contraseña.", function () {
             })
     });
 });
+
+describe("Crear una URL privada: Visibilidad.", function () {
+    var URI = "http://www.elconfidencial.com/";
+
+    it("Creada una Url privada: Permisos de visibilida al Usuario 'Willy'", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            token: token,
+            share: ['Willy']
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URI + '&private=true')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                done();
+            })
+    });
+
+
+    it("Registar Usuario: Willy", function (done) {
+
+        var user = {
+            username: 'Willy',
+            password: 'test'
+        };
+        chai.request(url).post('registryUser/')
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                done();
+            })
+    });
+    var tokenDummy = '';
+
+    it("Loguear Usuario: Willy", function (done) {
+
+        var user = {
+            username: 'Willy',
+            password: 'test'
+        };
+        chai.request(url).post('autenticateUser/')
+            .send(user)
+            .end(function (err, res) {
+                tokenDummy = res.body.token;
+                expect(res.statusCode).to.equal(200);
+                done();
+            })
+    });
+
+    it("Recuperar la URI: Willy.", function (done) {
+
+        var pass = {
+            username: 'Willy',
+            token: tokenDummy
+        };
+
+        chai.request(url).get("privateShort/" + shortUrl)
+            .send(pass)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                var otherURL = res.body.URI;
+                expect(otherURL).equal(URI);
+                done();
+            })
+    });
+
+
+});

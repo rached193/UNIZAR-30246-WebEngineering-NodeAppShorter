@@ -18,5 +18,7 @@ var privateUrlSchema = new Schema({
     , user: String
     , tags: [String]
     , password: String
+    , share: [String]
+    , caducidad: Date
 });
 exports.PrivateUrl = mongoose.model('PrivateUrl', privateUrlSchema);

@@ -70,10 +70,7 @@ exports.crearPrvateUrl = function (params, res) {
                 res.send({"shortUrl": data.short}); //send data
             } else {
                 var npromise = new Promise(function (resolve, reject) {
-                    Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
-                        if (err) reject(err);
-                        else resolve(data);
-                    });
+                    validarUsuario(params, resolve, reject);
                 });
 
                 npromise.then(function (data) {
@@ -89,6 +86,7 @@ exports.crearPrvateUrl = function (params, res) {
                                     , user: params.username
                                     , tags: params.tags
                                 , password: params.password
+                                , share: params.share
                                 });
 
                                 info.save(function (err, out) {
@@ -141,8 +139,34 @@ exports.fetchPrivate = function (params, res) {
     });
     promise.then(function (data) {
         if (data) {
-            if (data.password == params.password) res.send({URI: data.long});
-            res.sendStatus(521);
+            console.log(data.password);
+            console.log(params.password);
+            if (data.password == params.password) {
+                if (data.share.length > 0) {
+                    var promiseUsuario = new Promise(function (resolve, reject) {
+                        validarUsuario(params, resolve, reject);
+                    });
+                    promiseUsuario.then(function (user) {
+                        if (user) {
+                            var found = _.find(data.share, params.username);
+                            if (found) {
+                                res.send({URI: data.long});
+                            } else {
+                                res.sendStatus(523);
+                            }
+                        } else {
+                            res.sendStatus(522);
+                        }
+                    });
+
+                } else {
+                    res.send({URI: data.long});
+                }
+            }
+            else {
+                res.sendStatus(521);
+            }
+
         }
         else {
             res.send({URI: ""});
@@ -203,6 +227,12 @@ function stopwords(array) {
     return nArray;
 }
 
+function validarUsuario(params, resolve, reject) {
+    Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
+        if (err) reject(err);
+        else resolve(data);
+    });
+}
 
 function generateShortUrl(res) {
 

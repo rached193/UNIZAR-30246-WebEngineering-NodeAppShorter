@@ -24,6 +24,8 @@ exports.crearUrlShort = function (req, res) {
         req.params.token = req.body.token;
         req.params.password = " ";
         if (req.body.password) req.params.password = req.body.password;
+        req.params.share = [];
+        if (req.body.share) req.params.share = req.query.share;
 
         service.crearPrvateUrl(req.params, res);
 
@@ -84,9 +86,8 @@ exports.fetchPrivate = function (req, res) {
     req.params.password = " ";
     if (req.body.password) req.params.password = req.body.password;
 
-    function resolve(info) {
-        res.send();
-    }
+    req.params.username = req.body.username;
+    req.params.token = req.body.token;
 
     service.fetchPrivate(req.params, res);
 };
