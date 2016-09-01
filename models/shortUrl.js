@@ -10,8 +10,9 @@ var shortUrlSchema = new Schema({
     , title: [String]
     , tags: [String]
     , statistics: {
-        click: {type: Number}
-        , search: Number
+        click: {type: Number, default: 0}
+        , search: {type: Number, default: 0}
+        , create: {type: Number, default: 0}
 
     }
 });

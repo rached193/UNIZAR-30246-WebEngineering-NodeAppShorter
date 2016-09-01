@@ -63,7 +63,9 @@ exports.crearUrlShort = function (params, res) {
 exports.crearPrvateUrl = function (params, res) {
 
     var promise = new Promise(function (resolve, reject) {
-        Schemas.PrivateUrl.findOne({long: params.URI}, function (err, data) {
+        Schemas.PrivateUrl.findOneAndUpdate({long: params.URI}, {
+            $inc: {'statistics.create': 1}
+        }, function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });
@@ -122,10 +124,29 @@ exports.fetchUrl = function (params, res) {
 
 
     var promise = new Promise(function (resolve, reject) {
-        Schemas.ShortUrl.findOne({short: params.URI}, function (err, data) {
+        Schemas.ShortUrl.findOneAndUpdate({short: params.URI}, {
+            $inc: {'statistics.click': 1}
+        }, function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });
+    });
+    promise.then(function (data) {
+        if (data) res(data);
+        else res([]);
+    });
+};
+
+
+exports.fetchUrlInfo = function (params, res) {
+
+
+    var promise = new Promise(function (resolve, reject) {
+        Schemas.ShortUrl.findOne({short: params.URI}
+            , function (err, data) {
+                if (err) reject(err);
+                else resolve(data);
+            });
     });
     promise.then(function (data) {
         if (data) res(data);

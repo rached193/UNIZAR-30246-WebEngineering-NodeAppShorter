@@ -101,12 +101,22 @@ exports.fetchPrivate = function (req, res) {
 exports.fetchUrlInfo = function (req, res) {
 
 
-    function resolve(info) {
+    function resolveInfo(info) {
         console.log(info);
-        res.send({info: [info.title, info.description, info.tags]});
+        res.send({info: {title: info.title, description: info.description, tags: info.tags}});
     }
 
-    service.fetchUrl(req.params, resolve);
+    function resolveStatistics(info) {
+        console.log(info);
+        res.send({Statistics: {field: info.statistics[req.params.field]}});
+    }
+
+    var metodo = resolveInfo;
+    if (req.params.field) metodo = resolveStatistics;
+
+    service.fetchUrlInfo(req.params, metodo);
+
+
 };
 
 
