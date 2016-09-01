@@ -1,11 +1,11 @@
 {
-  "name": "ShorterUrl",
-  "description": "Trabajo para Ingenieria Web",
-  "main": "bin/www.js",
+  "name": "shorturl",
+  "description": "Frontend de la aplicacion",
+  "main": "app.js",
   "authors": [
-    "rached193 <archer193@hotmail.com>"
+    "Aron Collados"
   ],
-  "license": "MIT",
+  "license": "ISC",
   "homepage": "https://github.com/rached193/UNIZAR-30246-WebEngineering-NodeAppShorter",
   "private": true,
   "ignore": [
@@ -16,5 +16,9 @@
     "tests"
   ],
   "dependencies": {
+    "angular": "1.3.15",
+    "highcharts": "^4.2.6",
+    "ng-highcharts": "*",
+    "angular-ui-router": "ui-router#^0.3.1"
   }
 }

@@ -1,0 +1,8 @@
+{
+  "name": "shorturl",
+  "version": "0.0.1",
+  "description": "Frontend de la aplicacion",
+  "main": "app.js",
+  "author": "Aron Collados",
+  "license": "ISC"
+}
