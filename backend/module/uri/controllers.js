@@ -32,7 +32,8 @@ exports.crearUrlShort = function (req, res) {
         service.crearPrvateUrl(req.params, res);
 
     } else {
-
+        req.params.username = 'anon';
+        if (req.body.username)  req.params.username = req.body.username;
         service.crearUrlShort(req.params, resolve);
 
     }

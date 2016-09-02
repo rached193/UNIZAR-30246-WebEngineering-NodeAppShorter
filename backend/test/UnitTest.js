@@ -49,21 +49,6 @@ describe("Crear una Url en el sistema", function () {
 
 });
 
-describe("Estadisticas", function () {
-
-
-    var url = "http://localhost:3000/";
-
-    it("Recuperar la iformacion de la URL: Devuelve status 200", function (done) {
-
-        chai.request(url).get('publicShort/' + shortUrl + '/info')
-            .end(function (err, res) {
-                expect(res.statusCode).to.equal(200);
-                done();
-            })
-    });
-
-});
 
 describe("Registar Usuario", function () {
 
@@ -389,6 +374,100 @@ describe("Crear una URL privada: Caducidad.", function () {
         chai.request(url).get("privateShort/" + shortUrl)
             .end(function (err, res) {
                 expect(res.statusCode).to.equal(521);
+                done();
+            })
+    });
+
+});
+
+describe("Estadisticas por", function () {
+
+
+    var URIDUMMY1 = "http://www.3djuegos.com/";
+
+
+    it("Crear una URl: Dummy 1, Usuario: Anom", function (done) {
+
+
+        chai.request(url).get('generateShort/?URI=' + URIDUMMY1)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
+                done();
+            })
+    });
+
+
+    var url = "http://localhost:3000/";
+
+    it("Recuperar la informacion de la URL: Devuelve status 200", function (done) {
+
+        chai.request(url).get('publicShort/' + shortUrl + '/info')
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                done();
+            })
+    });
+
+    var URIDUMMY2 = "http://www.elconfidencial.com/";
+    it("Crear una URl: Dummy 2, Usuario: Anom", function (done) {
+
+
+        chai.request(url).get('generateShort/?URI=' + URIDUMMY2)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
+                done();
+            })
+    });
+
+    var URIDUMMY3 = "http://elpais.com/";
+    it("Crear una URl: Dummy 3, Usuario: Anom", function (done) {
+
+
+        chai.request(url).get('generateShort/?URI=' + URIDUMMY3)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
+                done();
+            })
+    });
+
+    var URIDUMMY4 = "http://www.heraldo.es/";
+    it("Crear una URl: Dummy 3, Usuario: vgheri", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            token: token
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URIDUMMY4)
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
+                done();
+            })
+    });
+
+    var URIDUMMY5 = "http://francis.naukas.com/";
+    it("Crear una URl: Dummy 3, Usuario: vgheri", function (done) {
+
+        var user = {
+            username: 'vgheri',
+            token: token
+        };
+
+        chai.request(url).get('generateShort/?URI=' + URIDUMMY5)
+            .send(user)
+            .end(function (err, res) {
+                expect(res.statusCode).to.equal(200);
+                shortUrl = res.body.shortUrl;
+                expect(shortUrl).to.exist;
                 done();
             })
     });

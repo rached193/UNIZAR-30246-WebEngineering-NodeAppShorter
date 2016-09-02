@@ -36,10 +36,16 @@ exports.registryUser = function (params, res) {
 
 exports.autenticateUser = function (params, res) {
     var token = randomValueHex(12);
+
+    var date = new Date();
+
+    date.setHours(date.getHours() + 1);
+
     var promise = new Promise(function (resolve, reject) {
         Schemas.UserAccount.findOneAndUpdate({
             user: params.username,
-            pass: params.password
+            pass: params.password,
+            session: date
         }, {token: token}, function (err, data) {
             if (err) reject(err);
             else resolve(data);

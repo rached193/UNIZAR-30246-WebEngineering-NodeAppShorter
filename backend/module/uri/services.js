@@ -8,10 +8,15 @@ exports.crearUrlShort = function (params, res) {
 
 
     var promise = new Promise(function (resolve, reject) {
-        Schemas.ShortUrl.findOne({long: params.URI}, function (err, data) {
-            if (err) reject(err);
-            else resolve(data);
-        });
+        Schemas.ShortUrl.findOneAndUpdate({long: params.URI}, {
+                $inc: {'statistics.create': 1}
+            },
+            function (err, data) {
+                if (err) reject(err);
+                else resolve(data);
+            }
+        )
+        ;
     });
 
     promise.then(function (data) {
@@ -33,7 +38,7 @@ exports.crearUrlShort = function (params, res) {
                             var info = new Schemas.ShortUrl({
                                 short: data
                                 , long: params.URI
-                                , user: 'Anom'
+                                , user: params.username
                                 , description: metaInfo[0]
                                 , title: metaInfo[1]
                                 , tags: params.tags
@@ -63,9 +68,7 @@ exports.crearUrlShort = function (params, res) {
 exports.crearPrvateUrl = function (params, res) {
 
     var promise = new Promise(function (resolve, reject) {
-        Schemas.PrivateUrl.findOneAndUpdate({long: params.URI}, {
-            $inc: {'statistics.create': 1}
-        }, function (err, data) {
+        Schemas.PrivateUrl.find({long: params.URI}, function (err, data) {
             if (err) reject(err);
             else resolve(data);
         });
@@ -241,7 +244,7 @@ function retriveMetaData(metadata) {
 }
 
 function stopwords(array) {
-    var dic = ['y', ',', 'las', 'en', '-', 'ultimas'];
+    var dic = ['y', ',', 'las', 'en', '-', 'ultimas', 'de', 'la', 'el', 'sobre', 'los'];
     var nArray = [];
     _.forEach(array, function (item) {
         var found = _.findIndex(dic, function (o) {
@@ -257,7 +260,14 @@ function stopwords(array) {
 function validarUsuario(params, resolve, reject) {
     Usuario.UserAccount.findOne({user: params.username, token: params.token}, function (err, data) {
         if (err) reject(err);
-        else resolve(data);
+        else {
+            if (data.session > Date.now()) {
+                resolve(data);
+            } else {
+                resolve8(null);
+            }
+        }
+        ;
     });
 }
 
